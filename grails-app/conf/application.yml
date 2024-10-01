@@ -1,9 +1,18 @@
+server:
+  port: 10090
 info:
   app:
     name: '@info.app.name@'
     version: '@info.app.version@'
     grailsVersion: '@info.app.grailsVersion@'
 grails:
+  plugin:
+    springsecurity:
+      rest:
+        token:
+          storage:
+            jwt:
+              secret: '4aa2c4a6-38d0-4b02-9217-857b0056ffdc'
   mime:
     disable:
       accept:
@@ -50,10 +59,10 @@ grails:
   controllers:
     defaultScope: singleton
 dataSource:
-  url: jdbc:mysql://localhost:3306/db
+  url: jdbc:mysql://activity-db:3306/activity
   driverClassName: com.mysql.cj.jdbc.Driver
-  username: root
-  password: ''
+  username: actuser1
+  password: actuser1
   pooled: true
   jmxExport: true
   dbCreate: update

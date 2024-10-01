@@ -1,0 +1,20 @@
+services:
+  db:
+    container_name: activity-db
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=activity
+      - MYSQL_USER=actuser1
+      - MYSQL_PASSWORD=actuser1
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+  app:
+    container_name: activity-app
+    build:
+      context: .
+    restart: on-failure
+    ports:
+      - "10090:10090"
+    depends_on:
+      - db

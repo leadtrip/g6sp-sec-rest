@@ -68,6 +68,9 @@ dependencies {
     testRuntimeOnly("org.seleniumhq.selenium:selenium-safari-driver:4.19.1")
     testImplementation("io.micronaut:micronaut-http-client")
 
+    // non-standard
+    implementation "org.grails.plugins:spring-security-core:6.1.1"
+    implementation "org.grails.plugins:spring-security-rest:3.0.1"
 }
 
 application {

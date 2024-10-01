@@ -1,13 +1,18 @@
 package wood.mike
 import grails.rest.*
 
-@Resource(uri='/api/product')
-class Product {
+import java.time.Duration
+import java.time.LocalDate
+import java.time.LocalTime
 
-    String prodName
-    String prodDesc
-    Double prodPrice
-    Date dateCreated
+@Resource(uri='/api/activity')
+class Activity {
+
+    String type
+    String description
+    LocalDate date
+    LocalTime startTime
+    Duration duration
 
     static constraints = {
     }

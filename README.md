@@ -1,27 +1,28 @@
-## Grails 6.2.0 Documentation
+## Grails 6.2.0 app utilizing spring security REST
 
-- [User Guide](https://docs.grails.org/6.2.0/guide/index.html)
-- [API Reference](https://docs.grails.org/6.2.0/api/index.html)
-- [Grails Guides](https://guides.grails.org/index.html)
----
+Run `./startup.sh` to build mysql database and app through docker compose
 
-## Feature asset-pipeline-grails documentation
+A test user, role and activity data is added in bootstrap.
 
-- [Grails Asset Pipeline Core documentation](https://www.asset-pipeline.com/manual/)
+API is available through `http://localhost:10090/api/activity`
 
-## Feature geb documentation
+Initially you'll get something like:
 
-- [Grails Geb Functional Testing for Grails documentation](https://github.com/grails3-plugins/geb#readme)
+```
+{
+    "timestamp": 1727766541361,
+    "status": 403,
+    "error": "Forbidden",
+    "path": "/api/activity"
+}
+```
+Get a token by POSTing to `http://localhost:10090/api/login`
 
-- [https://www.gebish.org/manual/current/](https://www.gebish.org/manual/current/)
+```
+{
+    "username": "user1",
+    "password": "pwd1"
+}
+```
 
-## Feature testcontainers documentation
-
-- [https://www.testcontainers.org/](https://www.testcontainers.org/)
-
-## Feature scaffolding documentation
-
-- [Grails Scaffolding Plugin documentation](https://grails.github.io/scaffolding/latest/groovydoc/)
-
-- [https://grails-fields-plugin.github.io/grails-fields/latest/guide/index.html](https://grails-fields-plugin.github.io/grails-fields/latest/guide/index.html)
-
+Then add header named X-Auth-Token to `/activity` request with value of access_token returned from login, request should now return activity data.
