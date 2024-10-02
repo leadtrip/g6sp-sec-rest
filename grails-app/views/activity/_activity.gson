@@ -1,0 +1,17 @@
+import wood.mike.Activity
+
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+
+model {
+    Activity activity
+}
+
+json {
+    id activity.id
+    type activity.type
+    description activity.description
+    date activity.date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+    startTime activity.startTime.format(DateTimeFormatter.ISO_LOCAL_TIME)
+    duration activity.duration.toString()
+}

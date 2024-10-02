@@ -6,23 +6,47 @@ A test user, role and activity data is added in bootstrap.
 
 API is available through `http://localhost:10090/api/activity`
 
-Initially you'll get something like:
+Initially you'll get a 401, something like:
 
 ```
 {
-    "timestamp": 1727766541361,
-    "status": 403,
-    "error": "Forbidden",
+    "timestamp": 1727857201721,
+    "status": 401,
+    "error": "Unauthorized",
     "path": "/api/activity"
 }
 ```
-Get a token by POSTing to `http://localhost:10090/api/login`
+Get an access token from the /api/login endpoint like`
+
+```
+curl --location 'http://localhost:10090/api/login' \
+--header 'Content-Type: application/json' \
+--header 'Cookie: ubid=2a4bca2a-ceed-4a9f-8710-dc7146373a71' \
+--data '{
+    "username": "user1",
+    "password": "pwd1"
+}'
+```
+
+Above will return something like:
 
 ```
 {
     "username": "user1",
-    "password": "pwd1"
+    "roles": [
+        "ROLE_USER"
+    ],
+    "token_type": "Bearer",
+    "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJwcmluY2lwYWwiOiJINHNJQUFBQUFBQUEvNVZTUDAvYlFCUi9jUk5CaFVRQkNTUUd1Z0FiY2tTN2tRbFFRS29zUUlRc1ZDcTYyQS8zNEh4bjdzNlFMQ2hUT3pCUXRVVkM0aXZ3VGRxRkQ0QmdZR1h1Mm5lRzRKUUY5VGEvKy9uMzc5M2xQVlNNaHZleFpsd1lQeFZaektWdlVzMWxiRERNTkxjZFB6T29JN1E1WWpVSE5ta0NENmZrUVNrQWowY1d4b0k5ZHNpcWdzbTR1dDdhdzlEVzJocmVLUjAvTXU1cWx1Q1IwdnYrRTNlb05QNGpVRkI3Q3g0TWJNTW9DME9WU2J1bVpMMmRjbzNSTm93VXMwQ0YrMjQwSHRJTlNzdVpNUDNRQVpTc0pUQUtZSWhsOXJNaVZZN0d3cHNIczVubG90cEFXd3RnTUdYR2tMdG5TUnJXV1hmM3pxYWtCQWR3RE9WMldxSkQzYzA2cU85NC9HVWxCS1htU3BxWnBreFV4SGU1RXlmKzd0VDNxOU9MYnRNRG9FN21YdjZubUU4dVFmZlhwejl2ODZKTG9ZV0pQdXNGck5aT3ljMW93YnlsMFNsZm4yLzhPTHYvK3ZFVktUdkV5di92WTJieHNibk9za3BTcHBsVmZUc2kycU95ZXdsRXZ2UXllVzhMSGIvQmsxUWd2U2hwTVhxU0tJZ3BibGtyMGV2Ynd1dk45YUMrMDJ6VU45MVh4ZG1jSjlIaFBMTmJsaDhvV3RYSjNiZmZwOU0zUlBBQktvZE1aRWlWanhTZ3RTeHBvZjV5ZVRZMTlQUDJKQS9RZTh4L0FiamxiaVFRQXdBQSIsInN1YiI6InVzZXIxIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlzcyI6IlNwcmluZyBTZWN1cml0eSBSRVNUIEdyYWlscyBQbHVnaW4iLCJleHAiOjE3Mjc4NjA3NTIsImlhdCI6MTcyNzg1NzE1Mn0.jw6coY3oiEsloIRY6DHnIBUPVjgqRe-N1v3a722fR_Q",
+    "expires_in": 3600,
+    "refresh_token": "eyJhbGciOiJIUzI1NiJ9.eyJwcmluY2lwYWwiOiJINHNJQUFBQUFBQUEvNVZTUDAvYlFCUi9jUk5CaFVRQkNTUUd1Z0FiY2tTN2tRbFFRS29zUUlRc1ZDcTYyQS8zNEh4bjdzNlFMQ2hUT3pCUXRVVkM0aXZ3VGRxRkQ0QmdZR1h1Mm5lRzRKUUY5VGEvKy9uMzc5M2xQVlNNaHZleFpsd1lQeFZaektWdlVzMWxiRERNTkxjZFB6T29JN1E1WWpVSE5ta0NENmZrUVNrQWowY1d4b0k5ZHNpcWdzbTR1dDdhdzlEVzJocmVLUjAvTXU1cWx1Q1IwdnYrRTNlb05QNGpVRkI3Q3g0TWJNTW9DME9WU2J1bVpMMmRjbzNSTm93VXMwQ0YrMjQwSHRJTlNzdVpNUDNRQVpTc0pUQUtZSWhsOXJNaVZZN0d3cHNIczVubG90cEFXd3RnTUdYR2tMdG5TUnJXV1hmM3pxYWtCQWR3RE9WMldxSkQzYzA2cU85NC9HVWxCS1htU3BxWnBreFV4SGU1RXlmKzd0VDNxOU9MYnRNRG9FN21YdjZubUU4dVFmZlhwejl2ODZKTG9ZV0pQdXNGck5aT3ljMW93YnlsMFNsZm4yLzhPTHYvK3ZFVktUdkV5di92WTJieHNibk9za3BTcHBsVmZUc2kycU95ZXdsRXZ2UXllVzhMSGIvQmsxUWd2U2hwTVhxU0tJZ3BibGtyMGV2Ynd1dk45YUMrMDJ6VU45MVh4ZG1jSjlIaFBMTmJsaDhvV3RYSjNiZmZwOU0zUlBBQktvZE1aRWlWanhTZ3RTeHBvZjV5ZVRZMTlQUDJKQS9RZTh4L0FiamxiaVFRQXdBQSIsInN1YiI6InVzZXIxIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlzcyI6IlNwcmluZyBTZWN1cml0eSBSRVNUIEdyYWlscyBQbHVnaW4iLCJyZWZyZXNoX29ubHkiOnRydWUsImlhdCI6MTcyNzg1NzE1Mn0.NXahKZs-Vw8J3rQv6MzdOcushu2Rbo0gMM3QYs1rIaY"
 }
 ```
 
-Then add header named X-Auth-Token to `/activity` request with value of access_token returned from login, request should now return activity data.
+Add an Authorization header to the /api/activity request of type Bearer & now you'll get some data back.
+
+```
+curl --location 'http://localhost:10090/api/activity' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJwcmluY2lwYWwiOiJINHNJQUFBQUFBQUEvNVZTUDAvYlFCUi9jUk5CaFVRQkNTUUd1Z0FiY2tTN2tRbFFRS29zUUlRc1ZDcTYyQS8zNEh4bjdzNlFMQ2hUT3pCUXRVVkM0aXZ3VGRxRkQ0QmdZR1h1Mm5lRzRKUUY5VGEvKy9uMzc5M2xQVlNNaHZleFpsd1lQeFZaektWdlVzMWxiRERNTkxjZFB6T29JN1E1WWpVSE5ta0NENmZrUVNrQWowY1d4b0k5ZHNpcWdzbTR1dDdhdzlEVzJocmVLUjAvTXU1cWx1Q1IwdnYrRTNlb05QNGpVRkI3Q3g0TWJNTW9DME9WU2J1bVpMMmRjbzNSTm93VXMwQ0YrMjQwSHRJTlNzdVpNUDNRQVpTc0pUQUtZSWhsOXJNaVZZN0d3cHNIczVubG90cEFXd3RnTUdYR2tMdG5TUnJXV1hmM3pxYWtCQWR3RE9WMldxSkQzYzA2cU85NC9HVWxCS1htU3BxWnBreFV4SGU1RXlmKzd0VDNxOU9MYnRNRG9FN21YdjZubUU4dVFmZlhwejl2ODZKTG9ZV0pQdXNGck5aT3ljMW93YnlsMFNsZm4yLzhPTHYvK3ZFVktUdkV5di92WTJieHNibk9za3BTcHBsVmZUc2kycU95ZXdsRXZ2UXllVzhMSGIvQmsxUWd2U2hwTVhxU0tJZ3BibGtyMGV2Ynd1dk45YUMrMDJ6VU45MVh4ZG1jSjlIaFBMTmJsaDhvV3RYSjNiZmZwOU0zUlBBQktvZE1aRWlWanhTZ3RTeHBvZjV5ZVRZMTlQUDJKQS9RZTh4L0FiamxiaVFRQXdBQSIsInN1YiI6InVzZXIxIiwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlzcyI6IlNwcmluZyBTZWN1cml0eSBSRVNUIEdyYWlscyBQbHVnaW4iLCJleHAiOjE3Mjc4NjA3NTIsImlhdCI6MTcyNzg1NzE1Mn0.jw6coY3oiEsloIRY6DHnIBUPVjgqRe-N1v3a722fR_Q' \
+--header 'Cookie: ubid=2a4bca2a-ceed-4a9f-8710-dc7146373a71'
+```
