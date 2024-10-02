@@ -2,6 +2,7 @@ import wood.mike.Activity
 
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
+import org.apache.commons.lang.time.DurationFormatUtils
 
 model {
     Activity activity
@@ -13,5 +14,5 @@ json {
     description activity.description
     date activity.date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
     startTime activity.startTime.format(DateTimeFormatter.ISO_LOCAL_TIME)
-    duration activity.duration.toString()
+    duration DurationFormatUtils.formatDurationWords(activity.duration.toMillis(), true, true)
 }

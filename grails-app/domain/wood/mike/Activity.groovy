@@ -1,5 +1,6 @@
 package wood.mike
 import grails.rest.*
+import org.apache.commons.lang.time.DurationFormatUtils
 
 import java.time.Duration
 import java.time.LocalDate
@@ -15,5 +16,6 @@ class Activity {
     Duration duration
 
     static constraints = {
+        DurationFormatUtils
     }
 }

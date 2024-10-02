@@ -8,6 +8,7 @@ plugins {
     id "com.bertramlabs.asset-pipeline"
     id "application"
     id "eclipse"
+    id "org.grails.plugins.views-json"
 }
 
 group = "wood.mike"
