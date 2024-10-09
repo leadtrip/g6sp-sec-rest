@@ -1,4 +1,4 @@
-## Grails 6.2.0 app utilizing spring security REST
+## Grails 6.2.0 app utilizing [spring security REST](https://grails.github.io/grails-spring-security-rest/3.0.1/docs/index.html)
 
 Run `./startup.sh` to build mysql database and app through docker compose
 
