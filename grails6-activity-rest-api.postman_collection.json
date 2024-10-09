@@ -1,0 +1,297 @@
+{
+	"info": {
+		"_postman_id": "a1da3132-6b4a-4e81-bd3a-1373530dbd56",
+		"name": "Activity",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2175988"
+	},
+	"item": [
+		{
+			"name": "activities",
+			"item": [
+				{
+					"name": "GET all activities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10090/api/activity",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10090",
+							"path": [
+								"api",
+								"activity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET activity",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10090/api/activity/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10090",
+							"path": [
+								"api",
+								"activity",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							"// Check if access_token is already set in the collection",
+							"if (!pm.collectionVariables.get('access_token')) {",
+							"    // Fetch a new access_token from the /api/login endpoint",
+							"    pm.sendRequest({",
+							"        url: pm.collectionVariables.get('login_url'),",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json'",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify({",
+							"                username: pm.collectionVariables.get('username'),",
+							"                password: pm.collectionVariables.get('password')",
+							"            })",
+							"        }",
+							"    }, function (err, res) {",
+							"        console.log('err ' + err + ' res.status ' + res.status)",
+							"        if (err || res.status !== 'OK') {",
+							"            console.log('Login request failed: ', err || res.status);",
+							"            return;",
+							"        }",
+							"",
+							"        const jsonData = res.json();",
+							"        const token = jsonData.access_token;",
+							"        const refreshToken = jsonData.refresh_token;",
+							"",
+							"        // Store the token in the collection variable",
+							"        pm.collectionVariables.set('access_token', token);",
+							"        console.log('New access_token set:', token);",
+							"        pm.collectionVariables.set('refresh_token', refreshToken);",
+							"        console.log('New refresh_token set:', refreshToken);",
+							"",
+							"        // Retry the original request that may have failed due to a 401 error",
+							"        pm.request.headers.add({",
+							"            key: 'Authorization',",
+							"            value: 'Bearer ' + token",
+							"        });",
+							"    });",
+							"} else {",
+							"    // Add the access_token to the request if it already exists",
+							"    console.log('Adding existing access_token to request')",
+							"    pm.request.headers.add({",
+							"        key: 'Authorization',",
+							"        value: 'Bearer ' + pm.collectionVariables.get('access_token')",
+							"    });",
+							"}",
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							"// Check if the response is a 401 Unauthorized",
+							"if (pm.response.code === 401) {",
+							"    console.log('Received 401, triggering token refresh');",
+							"",
+							"    // Clear the access_token to force a refresh",
+							"    pm.collectionVariables.unset('access_token');",
+							"",
+							"    // Send a new request to refresh the token",
+							"    pm.sendRequest({",
+							"        url: pm.collectionVariables.get('login_url'),",
+							"        method: 'POST',",
+							"        header: {",
+							"            'Content-Type': 'application/json'",
+							"        },",
+							"        body: {",
+							"            mode: 'raw',",
+							"            raw: JSON.stringify({",
+							"                username: pm.collectionVariables.get('username'),",
+							"                password: pm.collectionVariables.get('password')",
+							"            })",
+							"        }",
+							"    }, function (err, res) {",
+							"        if (err || res.status !== 200) {",
+							"            console.log('Login request failed: ', err || res.status);",
+							"            return;",
+							"        }",
+							"",
+							"        const jsonData = res.json();",
+							"        const newToken = jsonData.access_token;",
+							"        const refreshToken = jsonData.refresh_token",
+							"",
+							"        // Store the new token in the collection variable",
+							"        pm.collectionVariables.set('access_token', newToken);",
+							"        console.log('New access_token set:', newToken);",
+							"        pm.collectionVariables.set('refresh_token', refreshToken);",
+							"        console.log('New refresh_token set:', refreshToken);",
+							"",
+							"        // Retry the original request",
+							"        pm.sendRequest({",
+							"            url: pm.request.url.toString(),",
+							"            method: pm.request.method,",
+							"            header: pm.request.headers,",
+							"            body: pm.request.body",
+							"        }, function (err, response) {",
+							"            if (err) {",
+							"                console.error('Request retry failed:', err);",
+							"            } else {",
+							"                console.log('Request retried successfully:', response);",
+							"            }",
+							"        });",
+							"    });",
+							"}",
+							"",
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"user1\",\n    \"password\": \"pwd1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10090/api/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10090",
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST refresh token endpoint",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "refresh_token",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "{{refresh_token}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:10090/oauth/access_token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10090",
+							"path": [
+								"oauth",
+								"access_token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "login_url",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": ""
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		}
+	]
+}
