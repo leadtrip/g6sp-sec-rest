@@ -12,7 +12,10 @@
         </encoder>
     </appender>
 
-    <root level="error">
+    <logger name="grails.plugin.springsecurity.rest" level="INFO"/>
+    <logger name="org.springframework.security" level="INFO"/>
+
+    <root level="info">
         <appender-ref ref="STDOUT" />
     </root>
 
